@@ -1,26 +1,26 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.0 <0.9.0;
+pragma solidity ^0.8.0;
 
-contract Metacrafters {
+contract MyContract {
 
-    // Public variables to store the details about the coin
-    string public tokenName = "Metacrafters";
-    string public tokenAbbrevation = "MCF";
-    uint256 public totalSupply = 0;
+    // Mapping variable to store account
+    mapping(address => uint) public account;
 
-    // Mapping of addresses to balances
-    mapping(address => uint256) public balances;
+    // Deposit Function
+    function deposit(address _address, uint _value) public {
+        require(_value > 100, "Deposit value must be greater than 100");
 
-    // Mint function to increase the total supply and balance of the specified address
-    function mint(address _address, uint256 _value) public {
-        totalSupply += _value;
-        balances[_address] += _value;
+        account[_address] += _value;
+
+        assert(account[_address] >= _value);
+        if (account[_address] < _value) {
+            revert("Deposit failed");
+        }
     }
 
-    // Burn function to decrease the total supply and balance of the specified address
-    function burn(address _address, uint256 _value) public {
-        require(balances[_address] >= _value, "Insufficient balance to burn");
-        totalSupply -= _value;
-        balances[_address] -= _value;
+    // Fetch the account balance
+    function getBalance(address _address) public view returns (uint) {
+        return account[_address];
     }
+
 }
