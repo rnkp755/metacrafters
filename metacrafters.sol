@@ -1,26 +1,51 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract MyContract {
+contract MyBiddingPlatform {
 
-    // Mapping variable to store account
-    mapping(address => uint) public account;
+    address public admin;
 
-    // Deposit Function
-    function deposit(address _address, uint _value) public {
-        require(_value > 100, "Deposit value must be greater than 100");
+    struct Product {
+        string name;
+        uint id;
+        uint currentPrice;
+    }
 
-        account[_address] += _value;
+    Product[] public products;
+    
+    constructor(address _admin){
+        admin = _admin;
+    }
 
-        assert(account[_address] >= _value);
-        if (account[_address] < _value) {
-            revert("Deposit failed");
+    function addProduct(string memory _name, uint _id, uint _currentPrice) public {
+        require(msg.sender == admin, "Unauthorized access !!");
+        uint currentNoOfProducts = products.length;
+        Product memory newProduct = Product({
+            name: _name,
+            id: _id,
+            currentPrice: _currentPrice
+        });
+
+        products.push(newProduct);
+        assert(products.length == currentNoOfProducts + 1);
+    }
+
+    function bid(uint _id, uint _amount) public {
+        bool productFound = false;
+        uint i;
+        for(i = 0; i < products.length; i++){
+            if(products[i].id == _id){
+                productFound = true;
+                require(_amount > products[i].currentPrice, "Can only bid higher amount");
+                products[i].currentPrice = _amount;
+                break;
+            }
+        }
+        if(!productFound){
+            revert("Product with specified id is not found.");
+        }
+        else {
+            assert(products[i].currentPrice == _amount);
         }
     }
-
-    // Fetch the account balance
-    function getBalance(address _address) public view returns (uint) {
-        return account[_address];
-    }
-
 }
