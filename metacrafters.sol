@@ -7,7 +7,7 @@ contract MyBiddingPlatform {
 
     struct Product {
         string name;
-        uint id;
+        string url;
         uint currentPrice;
     }
 
@@ -17,12 +17,12 @@ contract MyBiddingPlatform {
         admin = _admin;
     }
 
-    function addProduct(string memory _name, uint _id, uint _currentPrice) public {
+    function addProduct(string memory _name, string memory _url, uint _currentPrice) public {
         require(msg.sender == admin, "Unauthorized access !!");
         uint currentNoOfProducts = products.length;
         Product memory newProduct = Product({
             name: _name,
-            id: _id,
+            url: _url,
             currentPrice: _currentPrice
         });
 
@@ -30,22 +30,22 @@ contract MyBiddingPlatform {
         assert(products.length == currentNoOfProducts + 1);
     }
 
-    function bid(uint _id, uint _amount) public {
-        bool productFound = false;
-        uint i;
-        for(i = 0; i < products.length; i++){
-            if(products[i].id == _id){
-                productFound = true;
-                require(_amount > products[i].currentPrice, "Can only bid higher amount");
-                products[i].currentPrice = _amount;
-                break;
-            }
-        }
-        if(!productFound){
+    function bid(uint index, uint _amount) public {
+        if(index >= products.length){
             revert("Product with specified id is not found.");
         }
         else {
-            assert(products[i].currentPrice == _amount);
+            require(_amount > products[index].currentPrice, "Can only bid higher amount");
+            products[index].currentPrice = _amount;
+            assert(products[index].currentPrice == _amount);
         }
+    }
+
+    function getProduct(uint index) public view returns (Product memory) {        
+        return products[index];     
+    }
+
+    function getAllProducts() public view returns (Product[] memory) {
+        return products;
     }
 }

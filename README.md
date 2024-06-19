@@ -1,13 +1,7 @@
+# Basic DApp Project (Metacrafters)
 
-  
+The solidity program is a simple bidding platform including few basic functions like addProduct and bid. It also has a frontend webpage made in `next js` to see the output of functions and do the transactions.
 
-# Smart Contract Project (Metacrafters)
-
-  
-
-The solidity program is a simple bidding platform that implements the `require()`, `assert()` and `revert()` statements.
-
-  
 
 ## Description
 
@@ -133,13 +127,29 @@ git clone https://github.com/rnkp755/metacrafters.git
 
 * Go to [```https://remix.ethereum.org/```](https://remix.ethereum.org/). Basically it's an online ide to run and deploy smart contracts
 
-* Drag and drop the **metacrafters.sol** file into remix's workspace.
+* Drag and drop the **metacrafters.sol** file (From root directory of project code) into remix's workspace.
 
 * Compile it with the help of solidity compiler button in sidebar.
 
-* Deploy it by clicking the button below to compiler button.
+* Deploy it by clicking the button below to compiler button. Use **`Injected Provider - Metamask`** as environment. ([Metamask](https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en) extension must be installed)
 
-* Test the functions by providing appropriate values to it.
+* Connect Sepolia Testnet / any other account of metamask to remix development envronment.
+
+* Click on deploy and confirm the transaction in metamsk.
+
+* Copy the contract address from response and paste it in **`config.js`** file in root directory of project.
+
+* If you have changed something in contract then go to compiler section on remix and copy **ABI** also and paste it in **`config.js`**
+
+* Open the terminal and run 
+```
+npm i 
+```
+```
+npm run dev
+```
+
+* Go to `localhost:3000` Test the functions by providing appropriate values to it.
 
   
 
