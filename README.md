@@ -1,107 +1,41 @@
-# Basic DApp Project (Metacrafters)
+# Basic ERC20 Token Implementation (Metacrafters)
 
-The solidity program is a simple bidding platform including few basic functions like addProduct and bid. It also has a frontend webpage made in `next js` to see the output of functions and do the transactions.
+Create a ERC20 token and deploy it on the Avalanche network for Degen Gaming. The smart contract should have the following functionality:
+
+- Minting new tokens: The platform should be able to create new tokens and distribute them to players as rewards. Only the owner can mint tokens.
+- Transferring tokens: Players should be able to transfer their tokens to others.
+- Redeeming tokens: Players should be able to redeem their tokens for items in the in-game store.
+- Checking token balance: Players should be able to check their token balance at any time.
+- Burning tokens: Anyone should be able to burn tokens, that they own, that are no longer needed.
 
 
 ## Description
 
   
 
-The provided Solidity code represents a smart contract named MyBiddingPlatform written in Solidity programming language for the Ethereum blockchain platform. This contract facilitates bidding on products where each product has a unique identifier (id), a name (name), and a current price (currentPrice). The contract owner or admin can add new products by calling the addProduct function with name, id, and current price as arguments.
+This Solidity code defines a smart contract named `Metacrafter` that is an ERC-20 token with some additional functionalities like minting, transferring, and burning tokens. It also allows for the redemption of certain items (represented by their prices in this case) based on the balance of the user.
 
-  
+1. **Import Statements**: The code starts by importing two OpenZeppelin smart contracts - `ERC20` and `Ownable`, which provide essential functionalities for an ERC-20 token (like minting, transferring, etc.) and ownership functionality respectively.
 
-In terms of bidding, anyone can bid on a product by calling the bid function with a product id (id) and a bid amount (_amount). If a bid is successful (i.e., it is higher than the current price), it will replace the current price of the product.
+2. **Contract Definition**: The contract `Metacrafter` is defined as a subcontract of both `ERC20` and `Ownable` contracts. This means it inherits all the functions from these base contracts. It also includes a mapping named `Prices` that associates items with their prices.
 
-  
+3. **Constructor**: The constructor initializes the contract by calling the parent constructors of `ERC20` and `Ownable`, and sets up some initial values for the `Prices` mapping. 
 
-The contract includes two public state variables:
+4. **Minting Function**: The function `mintDGN(address _to, uint256 _amount)` allows only the owner to mint new tokens (add them to an account).
 
-1. admin which holds the address of the contract owner or admin;
+5. **Transferring Function**: The function `transferDGN(address _to, uint256 _amount)` enables a user to transfer tokens from their own balance to another address. It requires that the sender has enough balance.
 
-2. products which is an array of Product structs containing name, id, and currentPrice fields.
+6. **Showing Shop Items Function**: This is an external view function named `showShopItems()` which returns a string message containing available items and their prices. The information is hardcoded in this contract but it could be stored on chain if required. 
 
-  
+7. **Redeem Function**: `redeemDGN(uint256 _item)` function allows users to redeem certain items based on the price set in the Prices mapping. It requires that the user has enough balance and the item is available. The owner of the contract gets all the money from these redemptions.
 
-The Product struct is defined inside MyBiddingPlatform contract. It is used to represent a product in the bidding platform.
+8. **Burn Function**: This function `burnDGN(uint256 _amount)` allows a user to burn their tokens (remove them from an account). It requires that the sender has enough balance. 
 
-  
-
-In addition, there is a constructor function which sets the admin address when a new instance of MyBiddingPlatform is created.
-
-  
-
-The addProduct function checks if the sender of the transaction is the admin before allowing addition of a new product. It also ensures that each product has a unique id by comparing it with the ids of all existing products in the products array.
-
-  
-
-The bid function checks if a bid is higher than the current price of a product before updating it. It uses a for loop to iterate over all products in the products array until it finds a product with a matching id. If no matching product is found, it reverts the transaction with an error message indicating "Product with specified id is not found".
-
-  
-
-Finally, both addProduct and bid functions include assertions ensuring their conditions hold true after their execution. If these conditions fail, it means there's an error in their logic or in their assumptions (e.g., unique id for new product or higher bid than current price). Assertions in Solidity are used for internal error checking during testing. They don't affect transaction execution or gas cost but can be used for debugging purposes.
-
-  
-
-1.  `// SPDX-License-Identifier: MIT` - This is a comment that identifies the license of your contract under which it is released. The license is MIT, which is a commonly used open source license for software projects.
-
-2.  `pragma solidity ^0.8.0;` - This line sets the compiler version of this contract. The `^0.8.0` means this contract requires a compiler version of at least 0.8.0 but less than 0.9.0.
-
-3.  `contract MyBiddingPlatform { ... }` - This creates a new contract named MyBiddingPlatform. The contract has its own scope, so variables defined inside it won't conflict with other contracts or global variables.
-
-4.  `function addProduct(string memory _name, uint _id, uint _currentPrice) public { ... }` - The function `addProduct` is a public function in the smart contract `MyBiddingPlatform` which allows an administrator (the one who deployed the contract) to add new products to the bidding platform.
+9. **Get Balance Function**: The external view function `getBalance()` returns the current balance of the message sender.
 
 
-	   Here's a step-by-step breakdown of what it does:
 
-	* It is declared with two parameters - `_name` (a string representing the name of the product), `_id` (a unique identifier for the product), and `_currentPrice` (the initial price of the product).
 
-	* It uses the `require` function from Solidity's built-in functionality to check if the function caller (`msg.sender`) is the same as the admin (the one who deployed the contract). If it's not, it reverts the transaction with an error message "Unauthorized access !!".
-
-	* It creates a new instance of a `Product` struct with the given parameters and assigns it to a new local variable `newProduct`.
-
-	* It then pushes (adds) the new product to the end of the public array `products` using the `push` function.
-
-	* Finally, it uses an `assert` statement to confirm if indeed the length of the products array has increased by 1 after adding a new product. If it does not, it reverts the transaction with an error message.
-
-  
-
-     The purpose of this function is to allow authorized users (in this case, the admin) to add new products for bidding in the bidding platform.
-
-  
-
-6.  `function bid(uint _id, uint _amount) { ... }` - This function is named "bid" and it is used by users to place a bid on a product listed on the MyBiddingPlatform smart contract.
-
-  
-
-     Here's a breakdown of what it does:
-
-  
-
-	- The function accepts two parameters - a product id (_id) of type uint and an amount (_amount) of type uint which represents the bid amount by a user.
-
-	  
-
-	- It checks if a product with a given id exists in the "products" array by iterating over all elements of the array using a for loop.
-
-	  
-
-	- If a product is found with a matching id (_id), it then checks if the bid amount (_amount) is higher than the current highest bid on the product (products[i].currentPrice). If it is higher, then it updates the currentPrice of the product with the new bid amount (_amount).
-
-	  
-
-	- If no product is found with a matching id (_id), it reverts with a message saying "Product with specified id is not found."
-
-	  
-
-	- If a product is found with a matching id (_id) and a valid bid is placed (i.e., _amount > products[i].currentPrice), then it asserts that products[i].currentPrice is indeed equal to _amount (indicating that it was correctly updated).
-
-  
-
-In summary, the bid function allows users to place bids on products listed on a platform. If a bid is successful (i.e., it is higher than the current highest bid), it updates the highest bid for a particular product in the platform. If a product id is invalid or if no such product exists, it reverts with an error message.
-
-  
-  
 
 ## Getting Started
 
@@ -127,29 +61,15 @@ git clone https://github.com/rnkp755/metacrafters.git
 
 * Go to [```https://remix.ethereum.org/```](https://remix.ethereum.org/). Basically it's an online ide to run and deploy smart contracts
 
-* Drag and drop the **metacrafters.sol** file (From root directory of project code) into remix's workspace.
+* Drag and drop the **metacrafters.sol** file into remix's workspace.
 
 * Compile it with the help of solidity compiler button in sidebar.
 
-* Deploy it by clicking the button below to compiler button. Use **`Injected Provider - Metamask`** as environment. ([Metamask](https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en) extension must be installed)
+* Deploy it by clicking the button below to compiler button.
 
-* Connect Sepolia Testnet / any other account of metamask to remix development envronment.
+* You must have Metamask installed and connected to Avalanche Fuji testnets.
 
-* Click on deploy and confirm the transaction in metamsk.
-
-* Copy the contract address from response and paste it in **`config.js`** file in root directory of project.
-
-* If you have changed something in contract then go to compiler section on remix and copy **ABI** also and paste it in **`config.js`**
-
-* Open the terminal and run 
-```
-npm i 
-```
-```
-npm run dev
-```
-
-* Go to `localhost:3000` Test the functions by providing appropriate values to it.
+* Test the functions by providing appropriate values to it.
 
   
 
